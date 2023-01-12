@@ -11,6 +11,7 @@ contract Funder {
         string name;
         string description;
         string email;
+        string imageURL;
         uint256 amount;
         bool isRunning;
         uint256 balance;
@@ -32,14 +33,19 @@ contract Funder {
         string calldata _name,
         string calldata _description,
         string calldata _email,
+        string calldata _imageURL,
         uint256 _amount
     ) public {
+        for (uint i = 0; i < fundme.length; i++) {
+            require(fundme[i].owner != msg.sender, "Fundraiser already created for this Address");
+        }
         numberOfFundme += 1;
         Fundme memory newFundme = Fundme(
             msg.sender,
             _name,
             _description,
             _email,
+            _imageURL,
             _amount,
             true,
             0
@@ -91,9 +97,10 @@ contract Funder {
                     fundme[i].balance >= fundme[i].amount,
                     "Target not reached yet"
                 );
-                (bool success, ) = _owner.call{value: fundme[i].amount}("");
+                (bool success, ) = _owner.call{value: fundme[i].balance}("");
                 require(success, "Can't claim Balance");
-                emit BalanceClaimed(_owner, fundme[i].name, fundme[i].amount);
+                emit BalanceClaimed(_owner, fundme[i].name, fundme[i].balance);
+                fundme[i].balance = 0;
                 break;
             }
         }
@@ -109,6 +116,7 @@ contract Funder {
             string memory name,
             string memory description,
             string memory email,
+            string memory imageURL,
             uint256 amount,
             bool isRunning,
             uint256 balance
@@ -121,6 +129,7 @@ contract Funder {
                     fundme[i].name,
                     fundme[i].description,
                     fundme[i].email,
+                    fundme[i].imageURL,
                     fundme[i].amount,
                     fundme[i].isRunning,
                     fundme[i].balance
