@@ -37,7 +37,10 @@ contract Funder {
         uint256 _amount
     ) public {
         for (uint i = 0; i < fundme.length; i++) {
-            require(fundme[i].owner != msg.sender, "Fundraiser already created for this Address");
+            require(
+                fundme[i].owner != msg.sender,
+                "Fundraiser already created for this Address"
+            );
         }
         numberOfFundme += 1;
         Fundme memory newFundme = Fundme(
@@ -55,18 +58,15 @@ contract Funder {
     }
 
     function deleteFundraiser() public {
-        bool isDeleted = false;
         uint256 i;
         address _owner = msg.sender;
         for (i = 0; i < fundme.length; i++) {
             if (fundme[i].owner == _owner) {
+                require(fundme[i].isRunning, "Fundme already deleted");
                 fundme[i].isRunning = false;
-                isDeleted = true;
                 break;
             }
         }
-        require(isDeleted, "Fundme already deleted");
-
         emit FundMeDeleted(_owner, fundme[i].name, fundme[i].description);
     }
 
@@ -90,9 +90,10 @@ contract Funder {
     }
 
     function claimBalance() public {
-        address _owner = msg.sender;
+        address payable _owner = payable(msg.sender);
         for (uint256 i = 0; i < fundme.length; i++) {
             if (fundme[i].owner == _owner) {
+                require(fundme[i].isRunning, "Fundraising has stopped");
                 require(
                     fundme[i].balance >= fundme[i].amount,
                     "Target not reached yet"
@@ -101,6 +102,7 @@ contract Funder {
                 require(success, "Can't claim Balance");
                 emit BalanceClaimed(_owner, fundme[i].name, fundme[i].balance);
                 fundme[i].balance = 0;
+                fundme[i].isRunning = false;
                 break;
             }
         }
