@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Avatar } from 'web3uikit';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {
     Card,
@@ -13,6 +14,7 @@ import {
     CardMedia,
     Button
 } from '@mui/material';
+import { useNotification } from "web3uikit";
 
 import ABI from "../constants/abi.json";
 import ContractAddress from "../constants/contractAddress.json";
@@ -28,6 +30,20 @@ async function getFunder(setFunder, ownerAddress) {
 export default function Delete() {
 
     const [funder, setFunder] = useState([]);
+    const [isButtonDisabled, setisButtonDisabled] = useState(false);
+
+    const dispatch = useNotification();
+
+    const handleNotification = (type, msg, icon) => {
+        dispatch({
+            type: type,
+            message: msg,
+            title: "Tx Notification",
+            position: "bottomL",
+            icon: icon
+        })
+    }
+
     useEffect(() => {
         (async function () {
             if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
@@ -47,7 +63,18 @@ export default function Delete() {
 
     const handleClick = async (e) => {
         console.log(funder);
-        await funderContract.deleteFundraiser();
+        funderContract.deleteFundraiser()
+            .then((tx) => {
+                handleNotification('info', 'Transaction Pending Please Wait!', <NotificationsIcon />);
+                setisButtonDisabled(true);
+                return tx;
+            })
+            .then((tx) => tx.wait(1))
+            .then(() => {
+                handleNotification('info', 'Transaction Complete!', <NotificationsIcon />)
+                setisButtonDisabled(false);
+            })
+            .catch(() => handleNotification('error', 'Transaction Failed!', <NotificationsIcon />))
     }
 
     return (
@@ -56,9 +83,9 @@ export default function Delete() {
             <Typography variant="h4" component="h5" style={{ textAlign: 'center' }}>
                 Delete Fundraisers
             </Typography>
-            {funder.length &&
-                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
 
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                {funder.length !== 0 &&
                     <div key={funder[0]} style={{ margin: '10px', paddingTop: '2em' }}>
                         <Card sx={{ maxWidth: 345 }}>
                             <CardHeader
@@ -94,6 +121,7 @@ export default function Delete() {
                                 </IconButton>
 
                                 <Button
+                                    disabled={isButtonDisabled}
                                     onClick={(e) => handleClick(e)}
                                     variant="contained"
                                     style={{ margin: 'auto' }}>
@@ -104,9 +132,8 @@ export default function Delete() {
 
                         </Card>
                     </div>
-                </div>
-            }
-
+                }
+            </div>
         </ThemeProvider>
     );
 }

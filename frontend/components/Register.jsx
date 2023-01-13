@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import {
     Button,
@@ -10,21 +10,48 @@ import {
     Container
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import NotificationIcon from '@mui/icons-material/Notifications';
+import { useNotification } from "web3uikit";
 import ABI from "../constants/abi.json";
 import ContractAddress from "../constants/contractAddress.json";
 
 const theme = createTheme();
 
 let funderContract;
-
-async function registerFundraiser(name, description, email, imageURL, target) {
-    await funderContract.registerFundraiser(
-        name, description, email, imageURL, target
-    );
-}
-
 export default function Register() {
+    const [isButtonDisabled, setisButtonDisabled] = useState(false);
+    const dispatch = useNotification();
+
+    const handleNotification = (type, msg, icon) => {
+        dispatch({
+            type: type,
+            message: msg,
+            title: "Tx Notification",
+            position: "bottomL",
+            icon: icon
+        })
+    }
+
+    async function registerFundraiser(name, description, email, imageURL, target, event) {
+        funderContract.registerFundraiser(
+            name, description, email, imageURL, target
+        ).then((tx) => {
+            handleNotification('info', 'Transaction Pending Please Wait!', <NotificationIcon />);
+            setisButtonDisabled(true);
+            return tx;
+        })
+            .then((tx) => tx.wait(1))
+            .then(() => {
+                handleNotification('info', 'Transaction Complete!', <NotificationIcon />);
+                setisButtonDisabled(false);
+                event.target.name.value = "";
+                event.target.email.value = "";
+                event.target.target.value = "";
+                event.target.description.value = "";
+                event.target.imageURL.value = "";
+            })
+            .catch(() => handleNotification('error', 'Transaction Failed!', <NotificationIcon />))
+    }
 
     useEffect(() => {
         (async function () {
@@ -56,13 +83,13 @@ export default function Register() {
         // const target = targetData / price;
         const target = targetData;
 
-        console.log({
-            name: name,
-            email: email,
-            target: target,
-            description: description
-        });
-        await registerFundraiser(name, description, email, imageURL, target);
+        // console.log({
+        //     name: name,
+        //     email: email,
+        //     target: target,
+        //     description: description
+        // });
+        await registerFundraiser(name, description, email, imageURL, target, event);
 
     };
 
@@ -122,7 +149,7 @@ export default function Register() {
                                     id="description"
                                     label="Description of the Fundraiser"
                                 />
-                            </Grid>  
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -135,6 +162,7 @@ export default function Register() {
 
                         </Grid>
                         <Button
+                            disabled={isButtonDisabled}
                             type="submit"
                             fullWidth
                             variant="contained"

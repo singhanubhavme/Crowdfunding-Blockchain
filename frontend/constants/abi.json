@@ -177,6 +177,58 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getAllRunningFunders",
+        "outputs": [{
+            "components": [{
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "internalType": "string",
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "email",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "imageURL",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "isRunning",
+                    "type": "bool"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "balance",
+                    "type": "uint256"
+                }
+            ],
+            "internalType": "struct Funder.Fundme[]",
+            "name": "",
+            "type": "tuple[]"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [{
             "internalType": "address",
             "name": "_owner",

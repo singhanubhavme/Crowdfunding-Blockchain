@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 import { Avatar } from 'web3uikit';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {
     FormControl,
@@ -17,6 +18,7 @@ import {
     CardMedia,
     Button
 } from '@mui/material';
+import { useNotification } from "web3uikit";
 
 import ABI from "../constants/abi.json";
 import ContractAddress from "../constants/contractAddress.json";
@@ -25,14 +27,27 @@ const theme = createTheme();
 
 let funderContract;
 
-async function getAllFunders(setFunders) {
-    setFunders(await funderContract.getAllFunders())
-}
-
 export default function Donate() {
+
+    const dispatch = useNotification();
+
+    const handleNotification = (type, msg, icon) => {
+        dispatch({
+            type: type,
+            message: msg,
+            title: "Tx Notification",
+            position: "bottomL",
+            icon: icon
+        })
+    }
+
+    async function getAllFunders(setFunders) {
+        setFunders(await funderContract.getAllFunders());
+    }
 
     const [funders, setFunders] = useState([]);
     const [amount, setAmount] = useState(0);
+    const [isButtonDisabled, setisButtonDisabled] = useState(false);
 
     useEffect(() => {
         (async function () {
@@ -52,9 +67,18 @@ export default function Donate() {
     }, []);
 
     const handleClick = async (e, funder) => {
-        console.log(funder);
-        console.log(amount);
-        await funderContract.donateToFundme(funder[0], { value: amount });
+        funderContract.donateToFundme(funder[0], { value: amount })
+            .then((tx) => {
+                handleNotification('info', 'Transaction Pending Please Wait!', <NotificationsIcon />);
+                setisButtonDisabled(true);
+                return tx;
+            })
+            .then((tx) => tx.wait(1))
+            .then(() => {
+                handleNotification('info', 'Transaction Complete!', <NotificationsIcon />)
+                setisButtonDisabled(false);
+            })
+            .catch(() => handleNotification('error', 'Transaction Failed!', <NotificationsIcon />))
         setAmount(0);
     }
 
@@ -113,6 +137,7 @@ export default function Donate() {
                                             />
                                         </FormControl>
                                         <Button
+                                            disabled={isButtonDisabled}
                                             onClick={(e) => handleClick(e, funder)}
                                             variant="contained"
                                             style={{ margin: 'auto' }}>

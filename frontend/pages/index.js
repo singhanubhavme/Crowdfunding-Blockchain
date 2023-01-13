@@ -1,11 +1,5 @@
-import Head from 'next/head'
-// import Image from 'next/image'
-import { Inter } from '@next/font/google'
-// import Header from '../components/Header'
-import Navbar from '../components/Navbar'
-
-const inter = Inter({ subsets: ['latin'] })
-
+import Head from 'next/head';
+import Navbar from '../components/Navbar';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
