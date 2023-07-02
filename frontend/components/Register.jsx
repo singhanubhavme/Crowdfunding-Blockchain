@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import NotificationIcon from '@mui/icons-material/Notifications';
+import { IoMdNotifications } from 'react-icons/io';
 import { useNotification } from 'web3uikit';
 import ABI from '../constants/abi.json';
 import ContractAddress from '../constants/contractAddress.json';
@@ -34,7 +34,7 @@ export default function Register() {
         handleNotification(
           'info',
           'Transaction Pending Please Wait!',
-          <NotificationIcon />
+          <IoMdNotifications />
         );
         setisButtonDisabled(true);
         return tx;
@@ -44,7 +44,7 @@ export default function Register() {
         handleNotification(
           'info',
           'Transaction Complete!',
-          <NotificationIcon />
+          <IoMdNotifications />
         );
         setisButtonDisabled(false);
         event.target.name.value = '';
@@ -54,7 +54,11 @@ export default function Register() {
         event.target.imageURL.value = '';
       })
       .catch(() =>
-        handleNotification('error', 'Transaction Failed!', <NotificationIcon />)
+        handleNotification(
+          'error',
+          'Transaction Failed!',
+          <IoMdNotifications />
+        )
       );
   }
 

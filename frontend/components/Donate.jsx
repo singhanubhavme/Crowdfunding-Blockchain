@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useNotification, Avatar } from 'web3uikit';
+import { IoMdNotifications } from 'react-icons/io';
+import { useNotification } from 'web3uikit';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -65,7 +65,7 @@ export default function Donate() {
         handleNotification(
           'info',
           'Transaction Pending Please Wait!',
-          <NotificationsIcon />
+          <IoMdNotifications />
         );
         setisButtonDisabled(true);
         return tx;
@@ -75,7 +75,7 @@ export default function Donate() {
         handleNotification(
           'info',
           'Transaction Complete!',
-          <NotificationsIcon />
+          <IoMdNotifications />
         );
         setisButtonDisabled(false);
         getAllFunders(setFunders);
@@ -84,7 +84,7 @@ export default function Donate() {
         handleNotification(
           'error',
           'Transaction Failed!',
-          <NotificationsIcon />
+          <IoMdNotifications />
         )
       );
     setAmount(0);
