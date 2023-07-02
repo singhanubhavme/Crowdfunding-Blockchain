@@ -1,143 +1,157 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from "ethers";
-import { Avatar } from 'web3uikit';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { ethers } from 'ethers';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useNotification } from "web3uikit";
-import {
-    Card,
-    CardHeader,
-    CardContent,
-    CardActions,
-    IconButton,
-    Typography,
-    CardMedia,
-    Button
-} from '@mui/material';
-
-import ABI from "../constants/abi.json";
-import ContractAddress from "../constants/contractAddress.json";
-
-const theme = createTheme();
-
+import { useNotification } from 'web3uikit';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import ABI from '../constants/abi.json';
+import ContractAddress from '../constants/contractAddress.json';
 let funderContract;
 
 async function getFunder(setFunder, ownerAddress) {
-    setFunder(await funderContract.getFunder(ownerAddress))
+  setFunder(await funderContract.getFunder(ownerAddress));
 }
 
 export default function ClaimBalance() {
+  const [funder, setFunder] = useState([]);
+  const [isButtonDisabled, setisButtonDisabled] = useState(false);
 
-    const [funder, setFunder] = useState([]);
-    const [isButtonDisabled, setisButtonDisabled] = useState(false);
+  const dispatch = useNotification();
 
-    const dispatch = useNotification();
+  const handleNotification = (type, msg, icon) => {
+    dispatch({
+      type: type,
+      message: msg,
+      title: 'Tx Notification',
+      position: 'bottomL',
+      icon: icon,
+    });
+  };
 
-    const handleNotification = (type, msg, icon) => {
-        dispatch({
-            type: type,
-            message: msg,
-            title: "Tx Notification",
-            position: "bottomL",
-            icon: icon
-        })
-    }
+  useEffect(() => {
+    (async function () {
+      if (
+        typeof window.ethereum !== 'undefined' ||
+        typeof window.web3 !== 'undefined'
+      ) {
+        const ethereum = window.ethereum;
+        const accounts = await ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const walletAddress = accounts[0];
+        const signer = provider.getSigner(walletAddress);
+        const funderAddress = ContractAddress['5'][0];
+        funderContract = new ethers.Contract(funderAddress, ABI, signer);
+        await getFunder(setFunder, walletAddress);
+      }
+    })();
+  }, []);
 
-    useEffect(() => {
-        (async function () {
-            if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
-                const ethereum = window.ethereum;
-                const accounts = await ethereum.request({
-                    method: "eth_requestAccounts",
-                })
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const walletAddress = accounts[0];
-                const signer = provider.getSigner(walletAddress);
-                const funderAddress = ContractAddress["5"][0];
-                funderContract = new ethers.Contract(funderAddress, ABI, signer);
-                await getFunder(setFunder, walletAddress);
-            }
-        })();
-    }, []);
-
-    const handleClick = async (e) => {
-        console.log(funder);
-        funderContract.claimBalance()
-            .then((tx) => {
-                handleNotification('info', 'Transaction Pending Please Wait!', <NotificationsIcon />);
-                setisButtonDisabled(true);
-                return tx;
-            })
-            .then((tx) => tx.wait(1))
-            .then(() => {
-                handleNotification('info', 'Transaction Complete!', <NotificationsIcon />)
-                setisButtonDisabled(false);
-            })
-            .catch(() => handleNotification('error', 'Transaction Failed!', <NotificationsIcon />))
-    }
-
-    return (
-        <ThemeProvider theme={theme}>
-            <div style={{ paddingTop: '5em' }}></div>
-            <Typography variant="h4" component="h5" style={{ textAlign: 'center' }}>
-                Claim Balance
-            </Typography>
-            {
-                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-                    {funder.length !== 0 &&
-                        <div key={funder[0]} style={{ margin: '10px', paddingTop: '2em' }}>
-                            <Card sx={{ maxWidth: 345 }}>
-                                <CardHeader
-                                    avatar={
-                                        <Avatar
-                                            isRounded
-                                            theme="image"
-                                        />
-                                    }
-                                    title={funder[1]}
-                                    subheader={funder[3]}
-                                />
-                                <CardMedia
-                                    component="img"
-                                    height="194"
-                                    image={funder[4]}
-                                    alt="fundraiser image"
-                                />
-                                <CardContent>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {funder[2]}
-                                    </Typography>
-                                </CardContent>
-
-                                <CardActions style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-
-                                    <IconButton aria-label="money">
-                                        Target : <AttachMoneyIcon />{JSON.parse(funder[5])}
-                                    </IconButton>
-
-                                    <IconButton aria-label="money" style={{ marginLeft: '0' }}>
-                                        Balance : <AttachMoneyIcon />{JSON.parse(funder[7])}
-                                    </IconButton>
-
-                                    <Button
-                                        onClick={(e) => handleClick(e)}
-                                        disabled={isButtonDisabled}
-                                        variant="contained"
-                                        style={{ margin: 'auto' }}>
-                                        Claim
-                                    </Button>
-
-                                </CardActions>
-
-                            </Card>
-                        </div>
+  const handleClick = async (e) => {
+    console.log(funder);
+    funderContract
+      .claimBalance()
+      .then((tx) => {
+        handleNotification(
+          'info',
+          'Transaction Pending Please Wait!',
+          <NotificationsIcon />
+        );
+        setisButtonDisabled(true);
+        return tx;
+      })
+      .then((tx) => tx.wait(1))
+      .then(() => {
+        handleNotification(
+          'info',
+          'Transaction Complete!',
+          <NotificationsIcon />
+        );
+        setisButtonDisabled(false);
+      })
+      .catch(() =>
+        handleNotification(
+          'error',
+          'Transaction Failed!',
+          <NotificationsIcon />
+        )
+      );
+  };
+  return (
+    <section class="text-gray-400 body-font bg-gray-900 mx-auto min-h-screen">
+      <div class="container px-5 py-12 mx-auto w-[90%]">
+        <div class="flex flex-wrap w-full mb-20">
+          <div class="w-full mb-6 lg:mb-0">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
+              Claim Balance
+            </h1>
+            <div class="h-1 w-20 bg-purple-500 rounded"></div>
+          </div>
+        </div>
+        <div class="flex flex-wrap -m-4">
+          {funder.length !== 0 && (
+            <div class="xl:w-1/4 md:w-1/2">
+              <div class="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
+                <img
+                  class="h-40 rounded w-full object-cover object-center mb-6"
+                  src={funder[4]}
+                  alt="content"
+                />
+                <h3 class="tracking-widest text-purple-400 text-xs font-medium title-font">
+                  {funder[2]}
+                </h3>
+                <h2 class="text-lg text-white font-medium title-font mb-4">
+                  {funder[1]}
+                </h2>
+                <div className="flex flex-row mx-auto">
+                  <CircularProgressbar
+                    className="h-14 items-center mr-4"
+                    value={
+                      (JSON.parse(funder[7]) / JSON.parse(funder[5])) * 100
                     }
+                    text={`${
+                      (JSON.parse(funder[7]) / JSON.parse(funder[5])) * 100
+                    }%`}
+                    styles={{
+                      text: {
+                        fill: 'white',
+                        fontSize: '24px',
+                      },
+                    }}
+                  />
+                  <h2 class="text-sm text-gray-400 font-medium title-font mb-4 flex self-center flex-col">
+                    Raised
+                    <h4 className="text-lg text-white">
+                      <span className="text-xl">${JSON.parse(funder[7])}</span>{' '}
+                      &nbsp;
+                      <span className="text-gray-200">
+                        of ${JSON.parse(funder[5])}
+                      </span>
+                    </h4>
+                  </h2>
+                  <div className="ml-auto text-sm">
+                    Created by
+                    <br />
+                    <span className="text-white text-lg">{funder[2]}</span>
+                  </div>
                 </div>
-            }
-
-        </ThemeProvider>
-    );
+                <p class="leading-relaxed text-base">{funder[2]}</p>
+                <div class="flex my-5 justify-center">
+                  <div class="w-16 h-1 rounded-full bg-purple-500 inline-flex"></div>
+                </div>
+                <button
+                  onClick={(e) => handleClick(e)}
+                  disabled={isButtonDisabled}
+                  class="flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg"
+                >
+                  Claim
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
-
-

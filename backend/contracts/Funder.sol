@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 contract Funder {
-    // State Variables
     address public owner;
     uint256 private numberOfFundme = 0;
 
