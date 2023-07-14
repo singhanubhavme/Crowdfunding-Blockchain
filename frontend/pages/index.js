@@ -1,9 +1,12 @@
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
+import Home from '../components/Home';
+import Footer from '../components/Footer';
+import { Fragment } from 'react';
 
-export default function Home() {
+export default function Main() {
   return (
-    <div>
+    <Fragment>
       <Head>
         <title>Decentralized Fundraiser</title>
         <meta
@@ -14,6 +17,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-    </div>
+      <Home />
+      <Footer />
+    </Fragment>
   );
 }

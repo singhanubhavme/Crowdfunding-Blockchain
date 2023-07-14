@@ -80,29 +80,29 @@ export default function Delete() {
       );
   };
   return (
-    <section class="text-gray-400 body-font bg-gray-900 mx-auto min-h-screen">
-      <div class="container px-5 py-12 mx-auto w-[90%]">
-        <div class="flex flex-wrap w-full mb-20">
-          <div class="w-full mb-6 lg:mb-0">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
+    <section className="text-gray-400 body-font bg-gray-900 mx-auto min-h-screen">
+      <div className="container px-5 py-12 mx-auto w-[90%]">
+        <div className="flex flex-wrap w-full mb-20">
+          <div className="w-full mb-6 lg:mb-0">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
               Delete the fundraiser
             </h1>
-            <div class="h-1 w-20 bg-purple-500 rounded"></div>
+            <div className="h-1 w-20 bg-purple-500 rounded"></div>
           </div>
         </div>
-        <div class="flex flex-wrap -m-4">
+        <div className="flex flex-wrap -m-4 justify-evenly">
           {funder.length !== 0 && (
-            <div class="xl:w-1/4 md:w-1/2">
-              <div class="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
+            <div className="xl:w-1/4 md:w-1/2">
+              <div className="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
                 <img
-                  class="h-40 rounded w-full object-cover object-center mb-6"
+                  className="h-40 rounded w-full object-cover object-center mb-6"
                   src={funder[4]}
                   alt="content"
                 />
-                <h3 class="tracking-widest text-purple-400 text-xs font-medium title-font">
+                <h3 className="tracking-widest text-purple-400 text-xs font-medium title-font">
                   {funder[2]}
                 </h3>
-                <h2 class="text-lg text-white font-medium title-font mb-4">
+                <h2 className="text-lg text-white font-medium title-font mb-4">
                   {funder[1]}
                 </h2>
                 <div className="flex flex-row mx-auto">
@@ -121,7 +121,7 @@ export default function Delete() {
                       },
                     }}
                   />
-                  <h2 class="text-sm text-gray-400 font-medium title-font mb-4 flex self-center flex-col">
+                  <h2 className="text-sm text-gray-400 font-medium title-font mb-4 flex self-center flex-col">
                     Raised
                     <h4 className="text-lg text-white">
                       <span className="text-xl">${JSON.parse(funder[7])}</span>{' '}
@@ -137,14 +137,14 @@ export default function Delete() {
                     <span className="text-white text-lg">{funder[2]}</span>
                   </div>
                 </div>
-                <p class="leading-relaxed text-base">{funder[2]}</p>
-                <div class="flex my-5 justify-center">
-                  <div class="w-16 h-1 rounded-full bg-purple-500 inline-flex"></div>
+                <p className="leading-relaxed text-base">{funder[2]}</p>
+                <div className="flex my-5 justify-center">
+                  <div className="w-16 h-1 rounded-full bg-purple-500 inline-flex"></div>
                 </div>
                 <button
                   disabled={isButtonDisabled}
                   onClick={(e) => handleClick(e)}
-                  class="flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg"
+                  className="flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg"
                 >
                   Delete
                 </button>

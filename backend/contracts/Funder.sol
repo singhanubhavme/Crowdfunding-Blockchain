@@ -8,6 +8,7 @@ contract Funder {
     struct Fundme {
         address owner;
         string name;
+        string username;
         string description;
         string email;
         string imageURL;
@@ -30,6 +31,7 @@ contract Funder {
     // Functions
     function registerFundraiser(
         string calldata _name,
+        string calldata _username,
         string calldata _description,
         string calldata _email,
         string calldata _imageURL,
@@ -45,6 +47,7 @@ contract Funder {
         Fundme memory newFundme = Fundme(
             msg.sender,
             _name,
+            _username,
             _description,
             _email,
             _imageURL,
@@ -115,6 +118,7 @@ contract Funder {
         returns (
             address fundmeOwner,
             string memory name,
+            string memory username,
             string memory description,
             string memory email,
             string memory imageURL,
@@ -128,6 +132,7 @@ contract Funder {
                 return (
                     fundme[i].owner,
                     fundme[i].name,
+                    fundme[i].username,
                     fundme[i].description,
                     fundme[i].email,
                     fundme[i].imageURL,

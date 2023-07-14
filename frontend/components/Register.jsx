@@ -22,6 +22,7 @@ export default function Register() {
 
   async function registerFundraiser(
     name,
+    username,
     description,
     email,
     imageURL,
@@ -29,7 +30,7 @@ export default function Register() {
     event
   ) {
     funderContract
-      .registerFundraiser(name, description, email, imageURL, target)
+      .registerFundraiser(name, username, description, email, imageURL, target)
       .then((tx) => {
         handleNotification(
           'info',
@@ -48,18 +49,20 @@ export default function Register() {
         );
         setisButtonDisabled(false);
         event.target.name.value = '';
+        event.target.username.value = '';
         event.target.email.value = '';
         event.target.target.value = '';
         event.target.description.value = '';
         event.target.imageURL.value = '';
       })
-      .catch(() =>
+      .catch(() => {
         handleNotification(
           'error',
           'Transaction Failed!',
           <IoMdNotifications />
-        )
-      );
+        );
+        setisButtonDisabled(true);
+      });
   }
 
   useEffect(() => {
@@ -82,6 +85,7 @@ export default function Register() {
   }, []);
 
   const handleSubmit = async (event) => {
+    setisButtonDisabled(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const ETHtoUSD = await fetch(
@@ -98,21 +102,24 @@ export default function Register() {
     // const target = targetData / price;
     const target = targetData;
 
-    // console.log({
-    //     name: name,
-    //     email: email,
-    //     target: target,
-    //     description: description
-    // });
+    console.log({
+      name: name,
+      email: email,
+      target: target,
+      description: description,
+      imageURL: imageURL,
+    });
     if (
       name !== '' &&
       description !== '' &&
       email !== '' &&
       imageURL !== '' &&
-      target !== ''
+      target !== '' &&
+      username !== ''
     ) {
       await registerFundraiser(
         name,
+        username,
         description,
         email,
         imageURL,
@@ -120,117 +127,161 @@ export default function Register() {
         event
       );
     } else {
+      setisButtonDisabled(true);
       dispatch({
         type: 'error',
         message: 'Please fill all the fields',
         title: 'Form Notification',
         position: 'bottomL',
-        icon: <NotificationIcon />,
+        icon: <IoMdNotifications />,
       });
     }
   };
 
   return (
-    <section class="text-gray-400 bg-gray-900 body-font relative min-h-screen">
-      <div class="container px-5 pb-24 pt-12 mx-auto">
-        <div class="flex flex-col text-center w-full mb-12">
-          <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">
+    <section className="text-gray-400 bg-gray-900 body-font relative min-h-screen">
+      <div className="container px-5 pb-24 pt-12 mx-auto">
+        <div className="flex flex-col text-center w-full mb-12">
+          <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">
             Register as Fundraiser
           </h1>
-          <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
             Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
             gentrify.
           </p>
         </div>
-        <div class="lg:w-1/2 md:w-2/3 mx-auto">
-          <div class="flex flex-wrap -m-2">
-            <div class="p-2 w-1/2">
-              <div class="relative">
-                <label for="name" class="leading-7 text-sm text-gray-400">
-                  Name of Fundraiser
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
+        <div className="lg:w-1/2 md:w-2/3 mx-auto">
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-wrap -m-2">
+              <div className="p-2 w-1/2">
+                <div className="relative">
+                  <label for="name" className="leading-7 text-sm text-gray-400">
+                    Name of Fundraiser
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="p-2 w-1/2">
-              <div class="relative">
-                <label for="username" class="leading-7 text-sm text-gray-400">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
+              <div className="p-2 w-1/2">
+                <div className="relative">
+                  <label
+                    for="username"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="p-2 w-1/2">
-              <div class="relative">
-                <label for="email" class="leading-7 text-sm text-gray-400">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
+              <div className="p-2 w-1/2">
+                <div className="relative">
+                  <label
+                    for="email"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="p-2 w-1/2">
-              <div class="relative">
-                <label for="target" class="leading-7 text-sm text-gray-400">
-                  Target Amount in $
-                </label>
-                <input
-                  type="number"
-                  id="target"
-                  name="target"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
+              <div className="p-2 w-1/2">
+                <div className="relative">
+                  <label
+                    for="target"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Target Amount in $
+                  </label>
+                  <input
+                    type="number"
+                    id="target"
+                    name="target"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="p-2 w-full">
-              <div class="relative">
-                <label for="imageURL" class="leading-7 text-sm text-gray-400">
-                  Image URL
-                </label>
-                <input
-                  type="text"
-                  id="imageURL"
-                  name="imageURL"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
+              <div className="p-2 w-full">
+                <div className="relative">
+                  <label
+                    for="imageURL"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Image URL
+                  </label>
+                  <input
+                    defaultValue={`https://picsum.photos/400/400?random=${Math.round(
+                      Math.random() * 1000
+                    )}`}
+                    type="text"
+                    id="imageURL"
+                    name="imageURL"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div class="p-2 w-full">
-              <div class="relative">
-                <label for="message" class="leading-7 text-sm text-gray-400">
-                  Description of the Fundraiser
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-                ></textarea>
+              <div className="p-2 w-full">
+                <div className="relative">
+                  <label
+                    for="description"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Description of the Fundraiser
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="p-2 w-full">
+                <button
+                  // disabled={isButtonDisabled}
+                  type="submit"
+                  className={`flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg`}
+                >
+                  {isButtonDisabled ? (
+                    <div role="status" className="mx-auto py-1 px-7">
+                      <svg
+                        aria-hidden="true"
+                        className="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 mx-auto"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentFill"
+                        />
+                      </svg>
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  ) : (
+                    <span>Register</span>
+                  )}
+                </button>
               </div>
             </div>
-            <div class="p-2 w-full">
-              <button
-                onClick={() => handleSubmit()}
-                class="flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg"
-              >
-                Register
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>
