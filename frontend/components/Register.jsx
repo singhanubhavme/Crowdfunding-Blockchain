@@ -66,11 +66,11 @@ export default function Register() {
     setisButtonDisabled(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const target = data.get('target');
     const name = data.get('name');
-    const email = data.get('email');
     const description = data.get('description');
+    const email = data.get('email');
     const imageURL = data.get('imageURL');
+    const target = data.get('target');
     const username = data.get('username');
     const deadline = data.get('deadline');
 
