@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
+/**
+ * @author  Anubhav Singh
+ * @title   Funder - A smart contract for creating fundraising campaigns and receiving donations.
+ * @dev     This contract allows users to create fundraising campaigns.
+ * @notice  This contract is for educational and illustrative purposes only. Use at your own risk.
+ */
+
 contract Funder {
     address public owner;
     uint256 private numberOfFundme = 0;
@@ -29,6 +36,15 @@ contract Funder {
     }
 
     // Functions
+    /**
+     * @dev Creates a new fundraising campaign.
+     * @param _name The name of the campaign.
+     * @param _username The username associated with the campaign.
+     * @param _description The description of the campaign.
+     * @param _email The email associated with the campaign.
+     * @param _imageURL The URL of the campaign's image.
+     * @param _amount The fundraising target amount.
+     */
     function registerFundraiser(
         string calldata _name,
         string calldata _username,
@@ -59,6 +75,9 @@ contract Funder {
         emit FundMeCreated(msg.sender, _name, _description);
     }
 
+    /**
+     * @dev Deletes the caller's fundraising campaign.
+     */
     function deleteFundraiser() public {
         uint256 i;
         address _owner = msg.sender;
@@ -72,6 +91,10 @@ contract Funder {
         emit FundMeDeleted(_owner, fundme[i].name, fundme[i].description);
     }
 
+    /**
+     * @dev Sends a donation to a specific fundraising campaign.
+     * @param _owner The address of the campaign owner.
+     */
     function donateToFundme(address _owner) public payable {
         require(msg.value > 0, "You need to send some ethers");
         bool donated = false;
@@ -91,6 +114,9 @@ contract Funder {
         require(donated, "Cannot Donate to this Fundme");
     }
 
+    /**
+     * @dev Claims the balance accumulated in the caller's campaign if the target is reached.
+     */
     function claimBalance() public {
         address payable _owner = payable(msg.sender);
         for (uint256 i = 0; i < fundme.length; i++) {
@@ -110,6 +136,10 @@ contract Funder {
         }
     }
 
+    /**
+     * @dev Retrieves the information of a specific fundraising campaign.
+     * @param _owner The address of the campaign owner.
+     */
     function getFunder(
         address _owner
     )
@@ -144,6 +174,9 @@ contract Funder {
         }
     }
 
+    /**
+     * @dev Retrieves all the active fundraising campaigns.
+     */
     function getAllFunders() public view returns (Fundme[] memory) {
         return fundme;
     }
