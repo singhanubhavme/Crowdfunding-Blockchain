@@ -26,7 +26,7 @@ async function main() {
   const Funder = await ethers.getContractFactory('Funder');
   const FUNDER_CONTRACT = await Funder.deploy();
 
-  if (network.config.chainId === 5) {
+  if (network.config.chainId === 11155111) {
     await FUNDER_CONTRACT.deployTransaction.wait(5);
     await verify(FUNDER_CONTRACT.address, []);
 
@@ -38,7 +38,7 @@ async function main() {
   const currentAddress = JSON.parse(
     fs.readFileSync(FRONTEND_ADDRESS_FILE, 'utf8')
   );
-  currentAddress[5] = [FUNDER_CONTRACT.address];
+  currentAddress[11155111] = [FUNDER_CONTRACT.address];
   fs.writeFileSync(
     FRONTEND_ADDRESS_FILE,
     JSON.stringify(currentAddress).toString()
