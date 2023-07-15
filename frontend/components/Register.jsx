@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { useState } from 'react';
 import { IoMdNotifications } from 'react-icons/io';
 import { useNotification } from 'web3uikit';
-import ABI from '../constants/abi.json';
-import ContractAddress from '../constants/contractAddress.json';
+import useWalletContext from '../hooks/use-wallet-hook';
 
-let funderContract;
 export default function Register() {
+  const { funderContract } = useWalletContext();
   const [isButtonDisabled, setisButtonDisabled] = useState(false);
   const dispatch = useNotification();
 
@@ -75,25 +73,6 @@ export default function Register() {
       });
   }
 
-  useEffect(() => {
-    (async function () {
-      if (
-        typeof window.ethereum !== 'undefined' ||
-        typeof window.web3 !== 'undefined'
-      ) {
-        const ethereum = window.ethereum;
-        const accounts = await ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const walletAddress = accounts[0];
-        const signer = provider.getSigner(walletAddress);
-        const funderAddress = ContractAddress['11155111'][0];
-        funderContract = new ethers.Contract(funderAddress, ABI, signer);
-      }
-    })();
-  }, []);
-
   const handleSubmit = async (event) => {
     setisButtonDisabled(true);
     event.preventDefault();
@@ -141,7 +120,7 @@ export default function Register() {
         event
       );
     } else {
-      setisButtonDisabled(true);
+      setisButtonDisabled(false);
       dispatch({
         type: 'error',
         message: 'Please fill all the fields',

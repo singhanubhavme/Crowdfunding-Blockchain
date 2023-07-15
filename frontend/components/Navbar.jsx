@@ -25,7 +25,9 @@ const ResponsiveAppBar = () => {
             </Link>
           ))}
         </nav>
-        <ConnectButton />
+        <div className="lg:mx-0 lg:mt-0 sm:mx-auto sm:mt-5">
+          <ConnectButton />
+        </div>
       </div>
     </header>
   );

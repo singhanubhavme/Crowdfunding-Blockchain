@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { useState, useEffect } from 'react';
 import { IoMdNotifications } from 'react-icons/io';
 import { useNotification } from 'web3uikit';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-
-import ABI from '../constants/abi.json';
-import ContractAddress from '../constants/contractAddress.json';
 import NotFoundImg from './assets/NotFoundImg';
 
-let funderContract;
+import useWalletContext from '../hooks/use-wallet-hook';
 
 export default function Donate() {
   const dispatch = useNotification();
+  const { funderContract } = useWalletContext();
+
+  const [funders, setFunders] = useState([]);
+  const [amount, setAmount] = useState(0);
+  const [isButtonDisabled, setisButtonDisabled] = useState(false);
 
   const handleNotification = (type, msg, icon) => {
     dispatch({
@@ -24,7 +25,7 @@ export default function Donate() {
     });
   };
 
-  async function getAllFunders(setFunders) {
+  async function getAllFunders() {
     const allFunders = await funderContract.getAllFunders();
     const runningFunders = [];
     for (let i = 0; i < allFunders.length; i++) {
@@ -35,29 +36,11 @@ export default function Donate() {
     setFunders(runningFunders);
   }
 
-  const [funders, setFunders] = useState([]);
-  const [amount, setAmount] = useState(0);
-  const [isButtonDisabled, setisButtonDisabled] = useState(false);
-
   useEffect(() => {
-    (async function () {
-      if (
-        typeof window.ethereum !== 'undefined' ||
-        typeof window.web3 !== 'undefined'
-      ) {
-        const ethereum = window.ethereum;
-        const accounts = await ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const walletAddress = accounts[0];
-        const signer = provider.getSigner(walletAddress);
-        const funderAddress = ContractAddress['11155111'][0];
-        funderContract = new ethers.Contract(funderAddress, ABI, signer);
-        getAllFunders(setFunders);
-      }
-    })();
-  }, []);
+    if (funderContract) {
+      getAllFunders();
+    }
+  }, [funderContract]);
 
   const handleClick = async (e, funder) => {
     setisButtonDisabled(true);
@@ -80,7 +63,7 @@ export default function Donate() {
           <IoMdNotifications />
         );
         setisButtonDisabled(false);
-        getAllFunders(setFunders);
+        getAllFunders();
       })
       .catch(() => {
         handleNotification(
@@ -127,16 +110,16 @@ export default function Donate() {
                     <div className="flex flex-row mx-auto">
                       <CircularProgressbar
                         className="h-14 items-center mr-4"
-                        value={
+                        value={(
                           parseFloat(
                             JSON.parse(funder[8]) / JSON.parse(funder[6])
-                          ).toFixed(2) * 100
-                        }
-                        text={`${
+                          ) * 100
+                        ).toFixed(1)}
+                        text={`${(
                           parseFloat(
                             JSON.parse(funder[8]) / JSON.parse(funder[6])
-                          ).toFixed(2) * 100
-                        }%`}
+                          ) * 100
+                        ).toFixed(1)}%`}
                         styles={{
                           text: {
                             fill: 'white',
@@ -173,7 +156,7 @@ export default function Donate() {
                             for="target"
                             className="leading-7 text-sm text-gray-400"
                           >
-                            Target Amount in $
+                            Enter Amount in $
                           </label>
                           <input
                             onChange={(e) => {
