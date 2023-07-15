@@ -7,14 +7,14 @@ const links = ['/', '/register', '/donate', '/claimBalance'];
 const ResponsiveAppBar = () => {
   return (
     <header className="text-gray-400 bg-gray-900 body-font">
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a
+      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center lg:justify-between">
+        <Link
           href="/"
           className="flex title-font font-medium items-center text-white mb-4 md:mb-0"
         >
           <span className="ml-3 text-xl">Decentralized Fundraiser</span>
-        </a>
-        <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+        </Link>
+        <nav className="md:mx-auto flex flex-wrap items-center text-base justify-center lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
           {pages.map((page, index) => (
             <Link
               key={links[index]}
