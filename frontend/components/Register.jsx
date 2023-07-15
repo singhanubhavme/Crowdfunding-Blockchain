@@ -1,23 +1,12 @@
 import { useState } from 'react';
 import { IoMdNotifications } from 'react-icons/io';
-import { useNotification } from 'web3uikit';
 import useWalletContext from '../hooks/use-wallet-hook';
+import useNotificationContext from '../hooks/use-notification-hook';
 
 export default function Register() {
   const { funderContract } = useWalletContext();
+  const { handleNotification } = useNotificationContext();
   const [isButtonDisabled, setisButtonDisabled] = useState(false);
-  const dispatch = useNotification();
-
-  const handleNotification = (type, msg, icon) => {
-    dispatch({
-      type: type,
-      message: msg,
-      title: 'Tx Notification',
-      position: 'bottomL',
-      icon: icon,
-    });
-  };
-
   async function registerFundraiser(
     name,
     username,
@@ -77,29 +66,14 @@ export default function Register() {
     setisButtonDisabled(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // const ETHtoUSD = await fetch(
-    //   'https://api.coinbase.com/v2/prices/ETH-USD/spot'
-    // );
-    const targetData = data.get('target');
-    // const price = (await ETHtoUSD.json()).data.amount;
-
+    const target = data.get('target');
     const name = data.get('name');
     const email = data.get('email');
     const description = data.get('description');
     const imageURL = data.get('imageURL');
     const username = data.get('username');
     const deadline = data.get('deadline');
-    // const target = targetData / price;
-    const target = targetData;
 
-    console.log({
-      name: name,
-      email: email,
-      target: target,
-      description: description,
-      imageURL: imageURL,
-      deadline: deadline,
-    });
     if (
       name !== '' &&
       description !== '' &&
@@ -121,13 +95,11 @@ export default function Register() {
       );
     } else {
       setisButtonDisabled(false);
-      dispatch({
-        type: 'error',
-        message: 'Please fill all the fields',
-        title: 'Form Notification',
-        position: 'bottomL',
-        icon: <IoMdNotifications />,
-      });
+      handleNotification(
+        'error',
+        'Please fill all the fields!',
+        <IoMdNotifications />
+      );
     }
   };
 

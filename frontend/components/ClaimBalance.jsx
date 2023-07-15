@@ -1,32 +1,20 @@
 import { useState, useEffect } from 'react';
 import { IoMdNotifications } from 'react-icons/io';
-import { useNotification } from 'web3uikit';
 import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
 import NotFoundImg from './assets/NotFoundImg';
 import useWalletContext from '../hooks/use-wallet-hook';
+import useNotificationContext from '../hooks/use-notification-hook';
 
 export default function ClaimBalance() {
   const { funderContract, walletAdd } = useWalletContext();
+  const { handleNotification } = useNotificationContext();
   const [funder, setFunder] = useState([]);
   const [updateUI, setUpdateUI] = useState(false);
   const [isButtonDisabled, setisButtonDisabled] = useState(false);
 
-  const dispatch = useNotification();
-
   async function getFunder(ownerAddress) {
     setFunder(await funderContract?.getFunder(ownerAddress));
   }
-
-  const handleNotification = (type, msg, icon) => {
-    dispatch({
-      type: type,
-      message: msg,
-      title: 'Tx Notification',
-      position: 'bottomL',
-      icon: icon,
-    });
-  };
 
   useEffect(() => {
     (async function () {

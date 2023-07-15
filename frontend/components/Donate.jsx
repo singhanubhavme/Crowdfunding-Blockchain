@@ -1,29 +1,18 @@
 import { useState, useEffect } from 'react';
 import { IoMdNotifications } from 'react-icons/io';
-import { useNotification } from 'web3uikit';
 import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
 import NotFoundImg from './assets/NotFoundImg';
 
 import useWalletContext from '../hooks/use-wallet-hook';
+import useNotificationContext from '../hooks/use-notification-hook';
 
 export default function Donate() {
-  const dispatch = useNotification();
   const { funderContract } = useWalletContext();
+  const { handleNotification } = useNotificationContext();
 
   const [funders, setFunders] = useState([]);
   const [amount, setAmount] = useState(0);
   const [isButtonDisabled, setisButtonDisabled] = useState(false);
-
-  const handleNotification = (type, msg, icon) => {
-    dispatch({
-      type: type,
-      message: msg,
-      title: 'Tx Notification',
-      position: 'bottomL',
-      icon: icon,
-    });
-  };
 
   async function getAllFunders() {
     const allFunders = await funderContract.getAllFunders();
