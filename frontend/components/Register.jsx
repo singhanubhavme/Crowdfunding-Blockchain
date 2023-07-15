@@ -78,7 +78,7 @@ export default function Register() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const walletAddress = accounts[0];
         const signer = provider.getSigner(walletAddress);
-        const funderAddress = ContractAddress['5'][0];
+        const funderAddress = ContractAddress['11155111'][0];
         funderContract = new ethers.Contract(funderAddress, ABI, signer);
       }
     })();
@@ -88,11 +88,11 @@ export default function Register() {
     setisButtonDisabled(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const ETHtoUSD = await fetch(
-      'https://api.coinbase.com/v2/prices/ETH-USD/spot'
-    );
+    // const ETHtoUSD = await fetch(
+    //   'https://api.coinbase.com/v2/prices/ETH-USD/spot'
+    // );
     const targetData = data.get('target');
-    const price = (await ETHtoUSD.json()).data.amount;
+    // const price = (await ETHtoUSD.json()).data.amount;
 
     const name = data.get('name');
     const email = data.get('email');

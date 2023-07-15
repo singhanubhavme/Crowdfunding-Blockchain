@@ -6,6 +6,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import ABI from '../constants/abi.json';
 import ContractAddress from '../constants/contractAddress.json';
+import NotFoundImg from './assets/NotFoundImg';
 
 let funderContract;
 
@@ -30,6 +31,10 @@ export default function Delete() {
   };
 
   useEffect(() => {
+    console.log(funder);
+  }, funder);
+
+  useEffect(() => {
     (async function () {
       if (
         typeof window.ethereum !== 'undefined' ||
@@ -42,7 +47,7 @@ export default function Delete() {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const walletAddress = accounts[0];
         const signer = provider.getSigner(walletAddress);
-        const funderAddress = ContractAddress['5'][0];
+        const funderAddress = ContractAddress['11155111'][0];
         funderContract = new ethers.Contract(funderAddress, ABI, signer);
         await getFunder(setFunder, walletAddress);
       }
@@ -91,28 +96,28 @@ export default function Delete() {
           </div>
         </div>
         <div className="flex flex-wrap -m-4 justify-evenly">
-          {funder.length !== 0 && (
+          {funder &&
+          funder.length !== 0 &&
+          funder[1] !== '' &&
+          funder[4] === true ? (
             <div className="xl:w-1/4 md:w-1/2">
               <div className="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
                 <img
                   className="h-40 rounded w-full object-cover object-center mb-6"
-                  src={funder[4]}
+                  src={funder[5]}
                   alt="content"
                 />
-                <h3 className="tracking-widest text-purple-400 text-xs font-medium title-font">
-                  {funder[2]}
-                </h3>
-                <h2 className="text-lg text-white font-medium title-font mb-4">
+                <h2 className="text-lg text-purple-400 font-medium title-font mb-4">
                   {funder[1]}
                 </h2>
                 <div className="flex flex-row mx-auto">
                   <CircularProgressbar
                     className="h-14 items-center mr-4"
                     value={
-                      (JSON.parse(funder[7]) / JSON.parse(funder[5])) * 100
+                      (JSON.parse(funder[8]) / JSON.parse(funder[6])) * 100
                     }
                     text={`${
-                      (JSON.parse(funder[7]) / JSON.parse(funder[5])) * 100
+                      (JSON.parse(funder[8]) / JSON.parse(funder[6])) * 100
                     }%`}
                     styles={{
                       text: {
@@ -124,10 +129,10 @@ export default function Delete() {
                   <h2 className="text-sm text-gray-400 font-medium title-font mb-4 flex self-center flex-col">
                     Raised
                     <h4 className="text-lg text-white">
-                      <span className="text-xl">${JSON.parse(funder[7])}</span>{' '}
+                      <span className="text-xl">${JSON.parse(funder[8])}</span>{' '}
                       &nbsp;
                       <span className="text-gray-200">
-                        of ${JSON.parse(funder[5])}
+                        of ${JSON.parse(funder[6])}
                       </span>
                     </h4>
                   </h2>
@@ -137,7 +142,7 @@ export default function Delete() {
                     <span className="text-white text-lg">{funder[2]}</span>
                   </div>
                 </div>
-                <p className="leading-relaxed text-base">{funder[2]}</p>
+                <p className="leading-relaxed text-base">{funder[3]}</p>
                 <div className="flex my-5 justify-center">
                   <div className="w-16 h-1 rounded-full bg-purple-500 inline-flex"></div>
                 </div>
@@ -149,6 +154,13 @@ export default function Delete() {
                   Delete
                 </button>
               </div>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-around items-center">
+              <div className="text-2xl text-white mb-10">
+                You haven&apos;t created any crowdfunding to Delete.
+              </div>
+              <NotFoundImg />
             </div>
           )}
         </div>
