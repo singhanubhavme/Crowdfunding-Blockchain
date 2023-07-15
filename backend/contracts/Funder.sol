@@ -22,6 +22,7 @@ contract Funder {
         uint256 amount;
         bool isRunning;
         uint256 balance;
+        uint256 deadline;
     }
     Fundme[] private fundme;
 
@@ -44,6 +45,7 @@ contract Funder {
      * @param _email The email associated with the campaign.
      * @param _imageURL The URL of the campaign's image.
      * @param _amount The fundraising target amount.
+     * @param _durationDays The fundraising deadling.
      */
     function registerFundraiser(
         string calldata _name,
@@ -51,15 +53,17 @@ contract Funder {
         string calldata _description,
         string calldata _email,
         string calldata _imageURL,
-        uint256 _amount
+        uint256 _amount,
+        uint256 _durationDays
     ) public {
         for (uint i = 0; i < fundme.length; i++) {
             require(
                 fundme[i].owner != msg.sender,
-                "Fundraiser already created for this Address"
+                "You can only create Fundraiser once though each address."
             );
         }
         numberOfFundme += 1;
+        uint256 deadline = block.timestamp + (_durationDays * 1 days);
         Fundme memory newFundme = Fundme(
             msg.sender,
             _name,
@@ -69,26 +73,11 @@ contract Funder {
             _imageURL,
             _amount,
             true,
-            0
+            0,
+            deadline
         );
         fundme.push(newFundme);
         emit FundMeCreated(msg.sender, _name, _description);
-    }
-
-    /**
-     * @dev Deletes the caller's fundraising campaign.
-     */
-    function deleteFundraiser() public {
-        uint256 i;
-        address _owner = msg.sender;
-        for (i = 0; i < fundme.length; i++) {
-            if (fundme[i].owner == _owner) {
-                require(fundme[i].isRunning, "Fundme already deleted");
-                fundme[i].isRunning = false;
-                break;
-            }
-        }
-        emit FundMeDeleted(_owner, fundme[i].name, fundme[i].description);
     }
 
     /**
@@ -105,6 +94,10 @@ contract Funder {
                     "Target already reached"
                 );
                 require(fundme[i].isRunning, "Fundraising has stopped");
+                require(
+                    fundme[i].deadline >= block.timestamp,
+                    "Deadline has Passed"
+                );
                 fundme[i].balance += msg.value;
                 emit DonationSent(_owner, fundme[i].name, msg.value);
                 donated = true;
@@ -123,8 +116,9 @@ contract Funder {
             if (fundme[i].owner == _owner) {
                 require(fundme[i].isRunning, "Fundraising has stopped");
                 require(
-                    fundme[i].balance >= fundme[i].amount,
-                    "Target not reached yet"
+                    (fundme[i].balance >= fundme[i].amount) ||
+                        (fundme[i].deadline <= block.timestamp),
+                    "Target not reached yet or deadline hasn't passed"
                 );
                 (bool success, ) = _owner.call{value: fundme[i].balance}("");
                 require(success, "Can't claim Balance");
@@ -154,7 +148,8 @@ contract Funder {
             string memory imageURL,
             uint256 amount,
             bool isRunning,
-            uint256 balance
+            uint256 balance,
+            uint256 deadline
         )
     {
         for (uint i = 0; i < fundme.length; i++) {
@@ -168,7 +163,8 @@ contract Funder {
                     fundme[i].imageURL,
                     fundme[i].amount,
                     fundme[i].isRunning,
-                    fundme[i].balance
+                    fundme[i].balance,
+                    fundme[i].deadline
                 );
             }
         }

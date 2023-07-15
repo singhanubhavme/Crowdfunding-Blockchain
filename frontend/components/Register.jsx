@@ -27,10 +27,19 @@ export default function Register() {
     email,
     imageURL,
     target,
+    deadline,
     event
   ) {
     funderContract
-      .registerFundraiser(name, username, description, email, imageURL, target)
+      .registerFundraiser(
+        name,
+        username,
+        description,
+        email,
+        imageURL,
+        target,
+        deadline
+      )
       .then((tx) => {
         handleNotification(
           'info',
@@ -54,6 +63,7 @@ export default function Register() {
         event.target.target.value = '';
         event.target.description.value = '';
         event.target.imageURL.value = '';
+        event.target.deadline.value = 0;
       })
       .catch(() => {
         handleNotification(
@@ -99,6 +109,7 @@ export default function Register() {
     const description = data.get('description');
     const imageURL = data.get('imageURL');
     const username = data.get('username');
+    const deadline = data.get('deadline');
     // const target = targetData / price;
     const target = targetData;
 
@@ -108,6 +119,7 @@ export default function Register() {
       target: target,
       description: description,
       imageURL: imageURL,
+      deadline: deadline,
     });
     if (
       name !== '' &&
@@ -115,7 +127,8 @@ export default function Register() {
       email !== '' &&
       imageURL !== '' &&
       target !== '' &&
-      username !== ''
+      username !== '' &&
+      deadline >= 1
     ) {
       await registerFundraiser(
         name,
@@ -124,6 +137,7 @@ export default function Register() {
         email,
         imageURL,
         target,
+        deadline,
         event
       );
     } else {
@@ -146,8 +160,7 @@ export default function Register() {
             Register as Fundraiser
           </h1>
           <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-            Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
-            gentrify.
+            Start a fundraiser to help someone.
           </p>
         </div>
         <div className="lg:w-1/2 md:w-2/3 mx-auto">
@@ -214,7 +227,7 @@ export default function Register() {
                   />
                 </div>
               </div>
-              <div className="p-2 w-full">
+              <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
                     for="imageURL"
@@ -229,6 +242,22 @@ export default function Register() {
                     type="text"
                     id="imageURL"
                     name="imageURL"
+                    className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  />
+                </div>
+              </div>
+              <div className="p-2 w-1/2">
+                <div className="relative">
+                  <label
+                    for="deadline"
+                    className="leading-7 text-sm text-gray-400"
+                  >
+                    Deadline (in Days)
+                  </label>
+                  <input
+                    type="number"
+                    id="deadline"
+                    name="deadline"
                     className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-purple-500 focus:bg-gray-900 focus:ring-2 focus:ring-purple-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                   />
                 </div>

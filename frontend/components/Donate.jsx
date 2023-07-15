@@ -7,6 +7,7 @@ import 'react-circular-progressbar/dist/styles.css';
 
 import ABI from '../constants/abi.json';
 import ContractAddress from '../constants/contractAddress.json';
+import NotFoundImg from './assets/NotFoundImg';
 
 let funderContract;
 
@@ -110,14 +111,13 @@ export default function Donate() {
           </p>
         </div>
         <div className="flex flex-wrap -m-4 justify-evenly">
-          {funders.length !== 0 &&
-            funders &&
+          {funders.length !== 0 && funders ? (
             funders.map((funder, index) => {
               return (
-                <div key={index} className="xl:w-1/4 md:w-1/2">
+                <div key={index} className="xl:w-[45%] md:w-[45%] m-2">
                   <div className="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
                     <img
-                      className="h-40 rounded w-full object-cover object-center mb-6"
+                      className="rounded w-full object-cover object-center mb-6"
                       src={funder[5]}
                       alt="content"
                     />
@@ -222,7 +222,15 @@ export default function Donate() {
                   </div>
                 </div>
               );
-            })}
+            })
+          ) : (
+            <div className="flex flex-col justify-around items-center">
+              <div className="text-2xl text-white mb-10">
+                No Crowdfunding to Donate, Please check again Later!!
+              </div>
+              <NotFoundImg />
+            </div>
+          )}
         </div>
       </div>
     </section>

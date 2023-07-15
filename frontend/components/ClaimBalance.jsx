@@ -91,14 +91,11 @@ export default function ClaimBalance() {
           </div>
         </div>
         <div className="flex flex-wrap -m-4 justify-evenly">
-          {funder &&
-          funder.length !== 0 &&
-          funder[1] !== '' &&
-          funder[4] === true ? (
-            <div className="xl:w-1/4 md:w-1/2">
+          {funder && funder.length !== 0 && funder[1] !== '' ? (
+            <div className="xl:w-[45%] md:w-[45%] m-2">
               <div className="bg-gray-800 bg-opacity-40 p-6 rounded-lg">
                 <img
-                  className="h-40 rounded w-full object-cover object-center mb-6"
+                  className="rounded w-full object-cover object-center mb-6"
                   src={funder[5]}
                   alt="content"
                 />

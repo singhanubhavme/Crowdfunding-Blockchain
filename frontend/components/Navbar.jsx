@@ -1,14 +1,8 @@
 import { ConnectButton } from '@web3uikit/web3';
 import Link from 'next/link';
 
-const pages = ['Home', 'Register', 'Donate', 'Delete', 'Claim Balance'];
-const links = [
-  '/',
-  '/register',
-  '/donate',
-  '/deleteFundraiser',
-  '/claimBalance',
-];
+const pages = ['Home', 'Register', 'Donate', 'Claim Balance'];
+const links = ['/', '/register', '/donate', '/claimBalance'];
 
 const ResponsiveAppBar = () => {
   return (
