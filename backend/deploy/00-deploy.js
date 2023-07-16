@@ -29,8 +29,6 @@ async function main() {
   if (network.config.chainId === 11155111) {
     await FUNDER_CONTRACT.deployTransaction.wait(5);
     await verify(FUNDER_CONTRACT.address, []);
-
-    // await FUNDER_CONTRACT.deployTransaction.wait(1);
   } else {
     console.log('Deployed on Localhost');
   }

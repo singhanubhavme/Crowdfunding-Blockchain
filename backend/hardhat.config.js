@@ -60,12 +60,6 @@ module.exports = {
       sepolia: ETHERSCAN_API_KEY,
     },
   },
-  gasReporter: {
-    enabled: false,
-    currency: 'USD',
-    outputFile: 'gas-report.txt',
-    noColor: true,
-  },
   namedAccounts: {
     deployer: {
       default: 0,

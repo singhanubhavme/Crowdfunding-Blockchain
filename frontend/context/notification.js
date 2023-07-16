@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext } from 'react';
 import { useNotification } from 'web3uikit';
 const NotificationContext = createContext();
 
