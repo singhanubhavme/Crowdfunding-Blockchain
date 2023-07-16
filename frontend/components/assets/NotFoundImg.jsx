@@ -3,7 +3,7 @@ const NotFoundImg = () => {
     <svg
       className="w-[50%] h-[100%]"
       xmlns="http://www.w3.org/2000/svg"
-      dataName="Layer 1"
+      data-name="Layer 1"
       width="860.13137"
       height="571.14799"
       viewBox="0 0 860.13137 571.14799"

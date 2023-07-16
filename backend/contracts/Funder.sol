@@ -56,7 +56,7 @@ contract Funder {
         uint256 _amount,
         uint256 _durationDays
     ) public {
-        for (uint i = 0; i < numberOfFundme; i++) {
+        for (uint i = 0; i < fundme.length; i++) {
             require(
                 fundme[i].owner != msg.sender,
                 "You can only create Fundraiser once though each address."
@@ -87,7 +87,7 @@ contract Funder {
     function donateToFundme(address _owner) public payable {
         require(msg.value > 0, "You need to send some ethers");
         bool donated = false;
-        for (uint256 i = 0; i < numberOfFundme; i++) {
+        for (uint256 i = 0; i < fundme.length; i++) {
             if (fundme[i].owner == _owner) {
                 require(
                     fundme[i].balance < fundme[i].amount,
@@ -112,7 +112,7 @@ contract Funder {
      */
     function claimBalance() public {
         address payable _owner = payable(msg.sender);
-        for (uint256 i = 0; i < numberOfFundme; i++) {
+        for (uint256 i = 0; i < fundme.length; i++) {
             if (fundme[i].owner == _owner) {
                 require(fundme[i].isRunning, "Fundraising has stopped");
                 require(
@@ -152,7 +152,7 @@ contract Funder {
             uint256 deadline
         )
     {
-        for (uint i = 0; i < numberOfFundme; i++) {
+        for (uint i = 0; i < fundme.length; i++) {
             if (fundme[i].owner == _owner) {
                 return (
                     fundme[i].owner,

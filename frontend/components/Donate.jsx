@@ -5,6 +5,7 @@ import NotFoundImg from './assets/NotFoundImg';
 
 import useWalletContext from '../hooks/use-wallet-hook';
 import useNotificationContext from '../hooks/use-notification-hook';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function Donate() {
   const { funderContract } = useWalletContext();
