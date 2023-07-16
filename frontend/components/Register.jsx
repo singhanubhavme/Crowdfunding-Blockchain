@@ -52,13 +52,13 @@ export default function Register() {
         event.target.imageURL.value = '';
         event.target.deadline.value = 0;
       })
-      .catch(() => {
+      .catch((err) => {
+        setisButtonDisabled(false);
         handleNotification(
           'error',
-          'Transaction Failed!',
+          `Transaction Failed! ${err?.error?.message}`,
           <IoMdNotifications />
         );
-        setisButtonDisabled(true);
       });
   }
 

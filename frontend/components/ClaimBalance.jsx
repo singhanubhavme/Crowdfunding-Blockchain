@@ -45,11 +45,11 @@ export default function ClaimBalance() {
         setUpdateUI(!updateUI);
         setisButtonDisabled(false);
       })
-      .catch(() => {
+      .catch((err) => {
         setisButtonDisabled(false);
         handleNotification(
           'error',
-          'Transaction Failed!',
+          `Transaction Failed! ${err?.error?.message}`,
           <IoMdNotifications />
         );
       });

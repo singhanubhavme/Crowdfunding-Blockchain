@@ -55,10 +55,10 @@ export default function Donate() {
         setisButtonDisabled(false);
         getAllFunders();
       })
-      .catch(() => {
+      .catch((err) => {
         handleNotification(
           'error',
-          'Transaction Failed!',
+          `Transaction Failed! ${err?.error?.message}`,
           <IoMdNotifications />
         );
         setisButtonDisabled(false);
