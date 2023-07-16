@@ -102,13 +102,13 @@ export default function ClaimBalance() {
                   />
                   <h2 className="text-sm text-gray-400 font-medium title-font mb-4 flex self-center flex-col">
                     Raised
-                    <h4 className="text-lg text-white">
+                    <div className="text-lg text-white">
                       <span className="text-xl">${JSON.parse(funder[8])}</span>{' '}
                       &nbsp;
                       <span className="text-gray-200">
                         of ${JSON.parse(funder[6])}
                       </span>
-                    </h4>
+                    </div>
                   </h2>
                   <div className="ml-auto text-sm">
                     Created by

@@ -119,7 +119,10 @@ export default function Register() {
             <div className="flex flex-wrap -m-2">
               <div className="p-2 w-1/2">
                 <div className="relative">
-                  <label for="name" className="leading-7 text-sm text-gray-400">
+                  <label
+                    htmlFor="name"
+                    className="leading-7 text-sm text-gray-400"
+                  >
                     Name of Fundraiser
                   </label>
                   <input
@@ -133,7 +136,7 @@ export default function Register() {
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
-                    for="username"
+                    htmlFor="username"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Your Name
@@ -149,7 +152,7 @@ export default function Register() {
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
-                    for="email"
+                    htmlFor="email"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Email
@@ -165,7 +168,7 @@ export default function Register() {
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
-                    for="target"
+                    htmlFor="target"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Target Amount in $
@@ -181,7 +184,7 @@ export default function Register() {
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
-                    for="imageURL"
+                    htmlFor="imageURL"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Image URL
@@ -200,7 +203,7 @@ export default function Register() {
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
-                    for="deadline"
+                    htmlFor="deadline"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Deadline (in Days)
@@ -217,7 +220,7 @@ export default function Register() {
               <div className="p-2 w-full">
                 <div className="relative">
                   <label
-                    for="description"
+                    htmlFor="description"
                     className="leading-7 text-sm text-gray-400"
                   >
                     Description of the Fundraiser
@@ -231,7 +234,7 @@ export default function Register() {
               </div>
               <div className="p-2 w-full">
                 <button
-                  // disabled={isButtonDisabled}
+                  disabled={isButtonDisabled}
                   type="submit"
                   className={`flex mx-auto text-white bg-purple-500 border-0 py-2 px-8 focus:outline-none hover:bg-purple-600 rounded text-lg`}
                 >
